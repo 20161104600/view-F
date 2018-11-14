@@ -13,10 +13,14 @@ int lightswitchleft = 9;
 int lightswitchright = 10;
 int lightswitchHL = 7;
 int lightswitchHR = 8;
+int lightswitchHouL = A0;
+int lightswitchHouR = A1;
 int valueleft = 0;
 int valueright = 0;
 int headL = 1;
 int headR = 1;
+int rearL = 0;
+int rearR = 0;
 //int robotarmoutput = A0;
 #include <Servo.h>
 Servo myservo;
@@ -41,6 +45,10 @@ void setup() {
   myservo.attach(30);
   pinMode(lightswitchleft, INPUT);
   pinMode(lightswitchright, INPUT);
+  pinMode(lightswitchHL, INPUT);
+  pinMode(lightswitchHR, INPUT);
+  pinMode(lightswitchHouR,INPUT);
+  pinMode(lightswitchHouL,INPUT);
  // digitalWrite(robotarmoutput, LOW);
 }
 //========================loop====================////========================loop====================////========================loop====================//
@@ -119,25 +127,25 @@ void loop() {
   }
   if (start == 3 && left == 0)
   {
-    can.positionwheel(3000, -130000, 0, 1);//桥
-    can.positionwheel(3000, -130000, 0, 2);
-    can.positionwheel(3000, -130000, 0, 3);
-    can.positionwheel(3000, -130000, 0, 4);
+    can.positionwheel(3000, -140000, 0, 1);//桥
+    can.positionwheel(3000, -140000, 0, 2);
+    can.positionwheel(3000, -140000, 0, 3);
+    can.positionwheel(3000, -140000, 0, 4);
     delay(3000);
     can.initdriver(CAN_BPS_1000K, 0, 0, 4);
-    zuoj();
+    zuo();
     //delay(3000);
     start++;
   }
   if(start == 3 && right == 0)
   {
-    can.positionwheel(3000, -130000, 0, 1);//继续后退 到门口
-    can.positionwheel(3000, -130000, 0, 2);
-    can.positionwheel(3000, -130000, 0, 3);
-    can.positionwheel(3000, -130000, 0, 4);
+    can.positionwheel(3000, -150000, 0, 1);//继续后退 到门口
+    can.positionwheel(3000, -150000, 0, 2);
+    can.positionwheel(3000, -150000, 0, 3);
+    can.positionwheel(3000, -150000, 0, 4);
     delay(3000);
     can.initdriver(CAN_BPS_1000K, 0, 0, 4);
-    youj();
+    you();
     //delay(3000);
     start++;
   }
@@ -189,7 +197,7 @@ void loop() {
   if (start == 7 && left == 0)
   {
     buchang();
-    zuoj();
+    zuo();
     start++;
   }
   if (start == 7 && right == 0)
@@ -235,12 +243,13 @@ void loop() {
     digitalWrite(13, HIGH);
     delay(300);
     digitalWrite(13, LOW);
-    delay(25000);//让13脚的LED闪烁
+    delay(22000);//让13脚的LED闪烁
     can.initdriver(CAN_BPS_1000K, 0, 0, 4);//========================================================================================================拿球
     start++;
   }
   if (start == 11 && left == 0)//-------------------------------------- left == 2
   {
+    buchang();
     zuo();
     //delay(3000);
     can.initdriver(CAN_BPS_1000K, 0, 0, 4);
@@ -257,6 +266,7 @@ void loop() {
   }
   if (start == 11 && right == 0)//---------------------------------------right == 2
   {
+    buchang();
     you();
     //delay(3000);
     can.initdriver(CAN_BPS_1000K, 0, 0, 4);
@@ -292,17 +302,24 @@ void loop() {
       can.speedwheel(0,  0, 3);
       can.speedwheel(1000,  0, 4);
     }
-    if ((headL == 0 && headR == 0 ) && (cm3 < 5 && cm3 > 0))
+    if ((headL == 0 && headR == 0 )&& (cm3 < 5 && cm3 > 0))
     {
       start++;
     }
   }
   if (start == 13 && left == 0)
   {
-    chaosheng();
+    /*chaosheng();
     shuchu();
     can.speedwheel(-800,  0, 0);
     if ( cm1 > 55 && cm1 < 150 ) //找门
+    {
+      can.initdriver(CAN_BPS_1000K, 0, 0, 4);
+      start++;
+    }*/
+    can.speedwheel(-800,  0, 0);
+    rearR = digitalRead(lightswitchHouR);
+    if(rearR == 1)
     {
       can.initdriver(CAN_BPS_1000K, 0, 0, 4);
       start++;
@@ -310,10 +327,17 @@ void loop() {
   }
     if (start == 13 && right == 0)
   {
-    chaosheng();
+    /*chaosheng();
     shuchu();
     can.speedwheel(-800,  0, 0);
     if ( cm2 > 55 && cm2 < 150) //找门
+    {
+      can.initdriver(CAN_BPS_1000K, 0, 0, 4);
+      start++;
+    }*/
+    can.speedwheel(-800,  0, 0);
+    rearL = digitalRead(lightswitchHouL);
+    if(rearL == 1)
     {
       can.initdriver(CAN_BPS_1000K, 0, 0, 4);
       start++;
@@ -326,19 +350,19 @@ void loop() {
   }
   if (start == 15 && left == 0)
   {
-    can.positionwheel(3000, -170000, 0, 1);//继续后退 到门口
-    can.positionwheel(3000, -170000, 0, 2);
-    can.positionwheel(3000, -170000, 0, 3);
-    can.positionwheel(3000, -170000, 0, 4);
+    can.positionwheel(3000, -200000, 0, 1);//继续后退 到门口
+    can.positionwheel(3000, -200000, 0, 2);
+    can.positionwheel(3000, -200000, 0, 3);
+    can.positionwheel(3000, -200000, 0, 4);
     delay(3000);
     can.initdriver(CAN_BPS_1000K, 0, 0, 4);
     zuo();//-200000左  转向门
     //delay(3000);
     can.initdriver(CAN_BPS_1000K, 0, 0, 4);
-    can.positionwheel(3000, 550000, 0, 1);//+200000  过门
-    can.positionwheel(3000, 550000, 0, 2);
-    can.positionwheel(3000, 550000, 0, 3);
-    can.positionwheel(3000, 550000, 0, 4);
+    can.positionwheel(3000, 750000, 0, 1);//+200000  过门
+    can.positionwheel(3000, 750000, 0, 2);
+    can.positionwheel(3000, 750000, 0, 3);
+    can.positionwheel(3000, 750000, 0, 4);
     delay(7000);
     can.initdriver(CAN_BPS_1000K, 0, 0, 4);
     you();//-200000 转向桥 换墙
@@ -348,20 +372,20 @@ void loop() {
   }
   if (start == 15 && right == 0)
   {
-    can.positionwheel(3000, -180000, 0, 1);//继续后退 到门口
-    can.positionwheel(3000, -180000, 0, 2);
-    can.positionwheel(3000, -180000, 0, 3);
-    can.positionwheel(3000, -180000, 0, 4);
+    can.positionwheel(3000, -200000, 0, 1);//继续后退 到门口
+    can.positionwheel(3000, -200000, 0, 2);
+    can.positionwheel(3000, -200000, 0, 3);
+    can.positionwheel(3000, -200000, 0, 4);
     delay(3000);
     can.initdriver(CAN_BPS_1000K, 0, 0, 4);
     you();//-200000左  转向门
     //delay(3000);
     can.initdriver(CAN_BPS_1000K, 0, 0, 4);
-    can.positionwheel(4000, 550000, 0, 1);//+200000  过门
-    can.positionwheel(4000, 550000, 0, 2);
-    can.positionwheel(4000, 550000, 0, 3);
-    can.positionwheel(4000, 550000, 0, 4);
-    delay(6000);
+    can.positionwheel(4000, 750000, 0, 1);//+200000  过门
+    can.positionwheel(4000, 750000, 0, 2);
+    can.positionwheel(4000, 750000, 0, 3);
+    can.positionwheel(4000, 750000, 0, 4);
+    delay(7000);
     can.initdriver(CAN_BPS_1000K, 0, 0, 4);
     zuo();//-200000左 转向桥 换墙
     //delay(3000);
@@ -396,10 +420,11 @@ void loop() {
   }
   if (start == 17 && left == 0)
   {
+    rearR = digitalRead(lightswitchHouR);
     chaosheng();
     shuchu();
     can.speedwheel(-800,  0, 0);
-    if (cm1 > 50)
+    if (cm1 > 50 && rearR == 1)
     {
       can.initdriver(CAN_BPS_1000K, 0, 0, 4);
       start++;
@@ -407,10 +432,11 @@ void loop() {
   }
   if (start == 17 && right == 0)
   {
+    rearL = digitalRead(lightswitchHouL);
     chaosheng();
     shuchu();
     can.speedwheel(-800,  0, 0);
-    if (cm2 > 50)
+    if (cm2 > 50 && rearL == 1 )
     {
       can.initdriver(CAN_BPS_1000K, 0, 0, 4);
       start++;
@@ -419,10 +445,10 @@ void loop() {
   if (start == 18 && left == 0)
   {
     can.initdriver(CAN_BPS_1000K, 0, 0, 4);
-    can.positionwheel(3000, -350000, 0, 1);//继续后退 退到台子前  和回家相关联
-    can.positionwheel(3000, -350000, 0, 2);
-    can.positionwheel(3000, -350000, 0, 3);
-    can.positionwheel(3000, -350000, 0, 4);
+    can.positionwheel(3000, -300000, 0, 1);//继续后退 退到台子前  和回家相关联
+    can.positionwheel(3000, -300000, 0, 2);
+    can.positionwheel(3000, -300000, 0, 3);
+    can.positionwheel(3000, -300000, 0, 4);
     delay(3000);
     can.initdriver(CAN_BPS_1000K, 0, 0, 4);
     zuo();
@@ -433,10 +459,10 @@ void loop() {
   if (start == 18 && right == 0)
   {
     can.initdriver(CAN_BPS_1000K, 0, 0, 4);
-    can.positionwheel(3000, -350000, 0, 1);//继续后退 退到台子前  和回家相关联
-    can.positionwheel(3000, -350000, 0, 2);
-    can.positionwheel(3000, -350000, 0, 3);
-    can.positionwheel(3000, -350000, 0, 4);
+    can.positionwheel(3000, -300000, 0, 1);//继续后退 退到台子前  和回家相关联
+    can.positionwheel(3000, -300000, 0, 2);
+    can.positionwheel(3000, -300000, 0, 3);
+    can.positionwheel(3000, -300000, 0, 4);
     delay(3000);
     can.initdriver(CAN_BPS_1000K, 0, 0, 4);
     you();
@@ -472,10 +498,10 @@ void loop() {
   if (start == 20 && left == 0)
   {
     can.initdriver(CAN_BPS_1000K, 0, 0, 4);
-    can.positionwheel(3000, -410000, 0, 1);//继续后退 退到放球处
-    can.positionwheel(3000, -410000, 0, 2);
-    can.positionwheel(3000, -410000, 0, 3);
-    can.positionwheel(3000, -410000, 0, 4);
+    can.positionwheel(3000, -350000, 0, 1);//继续后退 退到放球处
+    can.positionwheel(3000, -350000, 0, 2);
+    can.positionwheel(3000, -350000, 0, 3);
+    can.positionwheel(3000, -350000, 0, 4);
     delay(3500);
     can.initdriver(CAN_BPS_1000K, 0, 0, 4);
     you();
@@ -486,10 +512,10 @@ void loop() {
   if (start == 20 && right == 0)
   {
     can.initdriver(CAN_BPS_1000K, 0, 0, 4);
-    can.positionwheel(3000, -410000, 0, 1);//继续后退 退到放球处
-    can.positionwheel(3000, -410000, 0, 2);
-    can.positionwheel(3000, -410000, 0, 3);
-    can.positionwheel(3000, -410000, 0, 4);
+    can.positionwheel(3000, -350000, 0, 1);//继续后退 退到放球处
+    can.positionwheel(3000, -350000, 0, 2);
+    can.positionwheel(3000, -350000, 0, 3);
+    can.positionwheel(3000, -350000, 0, 4);
     delay(3500);
     can.initdriver(CAN_BPS_1000K, 0, 0, 4);
     zuo();
@@ -501,24 +527,25 @@ void loop() {
   {
     headL = digitalRead(lightswitchHL);
     headR = digitalRead(lightswitchHR);
-    qianjin();
+    can.speedwheel(1000, 0, 0);
     if (headL == 0 && headR == 1)
     {
-      can.speedwheel(2000,  0, 1);
+      can.speedwheel(1000,  0, 1);
       can.speedwheel(0,  0, 2);
-      can.speedwheel(2000,  0, 3);
+      can.speedwheel(1000,  0, 3);
       can.speedwheel(0,  0, 4);
     }
     if (headL == 1 && headR == 0)
     {
       can.speedwheel(0,  0, 1);
-      can.speedwheel(2000,  0, 2);
+      can.speedwheel(1000,  0, 2);
       can.speedwheel(0,  0, 3);
-      can.speedwheel(2000,  0, 4);
+      can.speedwheel(1000,  0, 4);
     }
     if ( ( headL == 0 && headR == 0 ) )// 到放球台前
     {
       can.initdriver(CAN_BPS_1000K, 0, 0, 4);
+      //buchang();
       start++;
       Serial1.print('B');//先向从机发一个‘a’，
       Serial.print('B');
@@ -526,7 +553,7 @@ void loop() {
       delay(300);
       digitalWrite(13, LOW);
       delay(300);//让13脚的LED闪烁
-      delay(25000);
+      delay(19000);
       can.initdriver(CAN_BPS_1000K, 0, 0, 4);
     }
   }
@@ -548,7 +575,7 @@ void loop() {
   }
   if (start == 22 && right == 0)
   {
-    delay(6000);//拿球
+    //delay(6000);//拿球
     can.initdriver(CAN_BPS_1000K, 0, 0, 4);
     can.positionwheel(3000, -100000, 0, 1);//继续后退 退到台子前   和回家对应
     can.positionwheel(3000, -100000, 0, 2);
@@ -592,10 +619,10 @@ void loop() {
     you();
     //delay(3000);
     can.initdriver(CAN_BPS_1000K, 0, 0, 4);
-    can.positionwheel(3000, 420000, 0, 1);
-    can.positionwheel(3000, 420000, 0, 2);
-    can.positionwheel(3000, 420000, 0, 3);
-    can.positionwheel(3000, 420000, 0, 4);
+    can.positionwheel(3000, 350000, 0, 1);
+    can.positionwheel(3000, 350000, 0, 2);
+    can.positionwheel(3000, 350000, 0, 3);
+    can.positionwheel(3000, 350000, 0, 4);
     delay(30000);
   }
   if (start == 24 && right == 0)
@@ -604,10 +631,10 @@ void loop() {
     zuo();
     //delay(3000);
     can.initdriver(CAN_BPS_1000K, 0, 0, 4);
-    can.positionwheel(3000, 420000, 0, 1);
-    can.positionwheel(3000, 420000, 0, 2);
-    can.positionwheel(3000, 420000, 0, 3);
-    can.positionwheel(3000, 420000, 0, 4);
+    can.positionwheel(3000, 350000, 0, 1);
+    can.positionwheel(3000, 350000, 0, 2);
+    can.positionwheel(3000, 350000, 0, 3);
+    can.positionwheel(3000, 350000, 0, 4);
     delay(30000);
   }
 }
@@ -641,19 +668,19 @@ void buchang()
   can.positionwheel(3000, -40000, 0, 3);
   can.positionwheel(3000, -40000, 0, 4);
   delay(1000);
-   can.initdriver(CAN_BPS_1000K, 0, 0, 4);
+  can.initdriver(CAN_BPS_1000K, 0, 0, 4);
 }
 void zuo()
 {
-  can.positionwheel(3000, -200000, 0, 1);
-  can.positionwheel(3000, 200000, 0, 2);
-  can.positionwheel(3000, -200000, 0, 3);
-  can.positionwheel(3000, 200000, 0, 4);
+  can.positionwheel(3000, -190000, 0, 1);
+  can.positionwheel(3000, 190000, 0, 2);
+  can.positionwheel(3000, -190000, 0, 3);
+  can.positionwheel(3000, 190000, 0, 4);
   delay(3000);
 }
 void zuoj()
 {
-  can.positionwheel(3000, -210000, 0, 1);
+  can.positionwheel(3000, -180000, 0, 1);
   can.positionwheel(3000, 210000, 0, 2);
   can.positionwheel(3000, -210000, 0, 3);
   can.positionwheel(3000, 210000, 0, 4);
@@ -661,10 +688,10 @@ void zuoj()
 }
 void you()
 {
-  can.positionwheel(3000, 200000, 0, 1);
-  can.positionwheel(3000, -200000, 0, 2);
-  can.positionwheel(3000, 200000, 0, 3);
-  can.positionwheel(3000, -200000, 0, 4);
+  can.positionwheel(3000, 190000, 0, 1);
+  can.positionwheel(3000, -190000, 0, 2);
+  can.positionwheel(3000, 190000, 0, 3);
+  can.positionwheel(3000, -190000, 0, 4);
   delay(3000);
 }
 void youj()
